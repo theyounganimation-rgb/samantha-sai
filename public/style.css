@@ -1,0 +1,390 @@
+@import url('/fonts.css');
+
+/* ───────── Tokens ───────── */
+:root{
+  color-scheme:light;
+  --paper:#f6f1ea; --surface:#fffdf9; --panel:#efe9e0; --panel-strong:#e6ddd1;
+  --ink:#2b2522; --soft:#5d524a; --muted:#7d7067; --faint:#a89b8f;
+  --accent:#d4583a; --accent-deep:#a8412a; --accent-wash:#f4ddd0; --accent-soft:#c9a18a; --accent-hover:#c54f33; --on-accent:#fffaf3;
+  --line:#e2dad0; --line-strong:#d3c8bb; --green:#5f7f5a; --bubble:#2f2926; --bubble-ink:#fbf6ee;
+  --hover:#ffffff70; --hover-ink:#3a2a1f0f; --media:#ece4d9; --media-line:#5b402321; --shadow:#4a352014; --scrollbar:#cdbfb066; --translucent:rgba(255,255,255,.6);
+  --danger:#b4432a; --danger-wash:#f6ddd5; --backdrop:#2b252266; --sheet-shadow:#2b1c1955;
+  --serif:ui-serif,"New York","Iowan Old Style",Georgia,"Times New Roman",serif;
+  --sans:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",system-ui,sans-serif;
+  --safe-top:env(safe-area-inset-top,0px); --safe-bottom:env(safe-area-inset-bottom,0px);
+  font-family:var(--sans); color:var(--ink); background:var(--paper); font-synthesis:none;
+  -webkit-text-size-adjust:100%; -webkit-font-smoothing:antialiased;
+}
+
+/* ───────── Dark mode (Owner, October 25, 2026): the same warm palette by lamplight. Follows the system unless the Appearance setting says otherwise. ───────── */
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    color-scheme:dark;
+    --paper:#17130f; --surface:#211b17; --panel:#2a231e; --panel-strong:#352c26;
+    --ink:#f1e8dd; --soft:#cdbfb2; --muted:#9d8f83; --faint:#6e635a;
+    --accent:#e0674a; --accent-deep:#f3a386; --accent-wash:#42271f; --accent-soft:#8a5a46; --accent-hover:#ec7a5e; --on-accent:#fff6ee;
+    --line:#2f2721; --line-strong:#423830; --green:#8db387; --bubble:#3b322c; --bubble-ink:#f6eee4;
+    --hover:#ffffff12; --hover-ink:#ffffff14; --media:#2a231e; --media-line:#ffffff14; --shadow:#00000066; --scrollbar:#6e635a66; --translucent:rgba(40,32,28,.7);
+    --danger:#f08a74; --danger-wash:#4a2620; --backdrop:#000000a6; --sheet-shadow:#000000b0;
+  }
+}
+:root[data-theme=dark]{
+  color-scheme:dark;
+  --paper:#17130f; --surface:#211b17; --panel:#2a231e; --panel-strong:#352c26;
+  --ink:#f1e8dd; --soft:#cdbfb2; --muted:#9d8f83; --faint:#6e635a;
+  --accent:#e0674a; --accent-deep:#f3a386; --accent-wash:#42271f; --accent-soft:#8a5a46; --accent-hover:#ec7a5e; --on-accent:#fff6ee;
+  --line:#2f2721; --line-strong:#423830; --green:#8db387; --bubble:#3b322c; --bubble-ink:#f6eee4;
+  --hover:#ffffff12; --hover-ink:#ffffff14; --media:#2a231e; --media-line:#ffffff14; --shadow:#00000066; --scrollbar:#6e635a66; --translucent:rgba(40,32,28,.7);
+  --danger:#f08a74; --danger-wash:#4a2620; --backdrop:#000000a6; --sheet-shadow:#000000b0;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;overflow:hidden;background:var(--paper)}
+button,input,textarea,select{font:inherit;color:inherit}
+button,a,input,select,textarea{-webkit-tap-highlight-color:transparent}
+button{cursor:pointer;touch-action:manipulation}
+button:disabled{opacity:.5;cursor:wait}
+button:focus-visible,a:focus-visible,select:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+button svg{width:20px;height:20px;stroke:currentColor;stroke-width:1.7;fill:none;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+a{color:inherit;text-underline-offset:3px}
+[hidden]{display:none!important}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+
+/* ───────── Frame ───────── */
+.app{height:100dvh;min-height:480px;display:grid;grid-template-columns:236px minmax(0,1fr);overflow:hidden}
+main{min-width:0;min-height:0;display:flex;flex-direction:column;position:relative}
+.view{flex:1;min-height:0}
+
+/* ───────── Sidebar (Mac) ───────── */
+.sidebar{background:var(--panel);border-right:1px solid var(--line);padding:52px 16px 18px;display:flex;flex-direction:column}
+.brand{text-decoration:none;font-weight:650;font-size:26px;letter-spacing:-1.2px;padding:6px 12px 26px}
+.brand-dot{color:var(--accent)}
+.nav-button{display:flex;align-items:center;gap:12px;border:0;width:100%;background:transparent;text-align:left;padding:10px 12px;border-radius:10px;font-size:14px;margin-bottom:3px;color:var(--soft);transition:background .15s,color .15s}
+.nav-button svg{width:18px;height:18px}
+.nav-button:hover{background:var(--hover)}
+.nav-button.active{background:var(--surface);color:var(--ink);box-shadow:0 1px 2px var(--shadow),0 0 0 1px var(--line)}
+.nav-button.active svg{stroke:var(--accent)}
+.nav-button kbd{margin-left:auto;font:11px var(--sans);color:var(--faint)}
+.side-presence{text-align:center;margin:auto 0;padding:32px 0}
+/* The orbs are drawn by orb.js; the gradient underneath only shows if WebGL is unavailable. */
+.little-orb,.mini-orb{display:block;border-radius:50%;background:radial-gradient(circle at 34% 28%,#ffe3ad 0%,#f0a26d 28%,#dc6046 62%,#b04032 90%);box-shadow:0 6px 20px #c0684833,inset -6px -6px 10px #8e382d30;animation:breathe 7s ease-in-out infinite}
+.orb-canvas:not(.drawn):not(.orb-fallback){opacity:0}
+canvas.little-orb.drawn,canvas.mini-orb.drawn{background:none;box-shadow:none;animation:none;border-radius:0}
+canvas.little-orb,canvas.mini-orb{cursor:pointer;-webkit-user-select:none;user-select:none}
+.little-orb{margin:-8px auto;width:92px;height:92px}
+.side-presence p{font:24px var(--serif);letter-spacing:-.3px;margin:20px 0 6px}
+.side-presence>span{font-size:12px;color:var(--muted)}
+.sidebar-bottom{margin-top:auto}
+.owner{display:flex;align-items:center;gap:10px;border-top:1px solid var(--line);margin-top:8px;padding:16px 8px 0;font-size:13px}
+.owner-avatar{width:30px;height:30px;background:var(--line-strong);border-radius:50%;display:grid;place-items:center;font:15px var(--serif)}
+.owner>div>span{display:block;color:var(--muted);font-size:11px;margin-top:2px}
+.owner>.connection-dot{margin-left:auto}
+
+/* ───────── Top bar ───────── */
+.topbar{flex-shrink:0;display:flex;align-items:center;justify-content:space-between;gap:12px;height:64px;padding:0 28px;border-bottom:1px solid var(--line)}
+.identity{display:flex;align-items:center;gap:11px;min-width:0}
+.mini-orb{width:46px;height:46px;margin:-5px -5px -5px -6px;flex-shrink:0;box-shadow:0 3px 10px #c0684830,inset -3px -3px 6px #8e382d30}
+.identity-name{font:600 20px/1.15 var(--serif);letter-spacing:-.3px}
+.connection-label{font-size:12px;color:var(--muted);display:flex;align-items:center;gap:6px;margin-top:2px;white-space:nowrap}
+.connection-dot{display:inline-block;height:7px;width:7px;border-radius:50%;background:var(--faint);flex-shrink:0;transition:background .3s}
+.connection-dot.online{background:var(--green);box-shadow:0 0 0 3px #5f7f5a1f}
+.presence-line::after{content:"Connecting…"}
+body[data-link="online"] .presence-line::after{content:"Here"}
+body[data-link="waiting"] .presence-line::after{content:"Connecting…"}
+body[data-link="offline"] .presence-line::after{content:"Can’t reach your Mac"}
+body.call-active .presence-line::after{content:"On a call"}
+body.call-active .connection-label{color:var(--accent-deep)}
+body.call-active .connection-dot.online{background:var(--accent);box-shadow:0 0 0 3px #d4583a22;animation:pulse 1.6s ease-in-out infinite}
+.topbar-actions{display:flex;align-items:center;gap:6px}
+.bar-button{position:relative;display:inline-flex;align-items:center;justify-content:center;gap:7px;height:40px;min-width:40px;border:0;border-radius:20px;background:transparent;color:var(--soft);font-size:14px;font-weight:500;transition:background .15s,color .15s,transform .1s}
+.bar-button:hover{background:var(--hover-ink)}
+.bar-button:active{transform:scale(.94)}
+.camera-chip{color:var(--faint)}
+.camera-chip.ready{color:var(--green)}
+.camera-chip.ready::after{content:"";position:absolute;top:9px;right:8px;width:6px;height:6px;border-radius:50%;background:var(--green);box-shadow:0 0 0 2px var(--paper)}
+.call-shortcut,.back-to-chat{padding:0 15px 0 12px;margin-left:4px}
+.call-shortcut{background:var(--accent);color:var(--on-accent);box-shadow:0 4px 14px #d4583a40}
+.call-shortcut:hover{background:var(--accent-hover)}
+.back-to-chat{background:var(--surface);box-shadow:0 0 0 1px var(--line-strong)}
+body[data-view="chat"] .back-to-chat,body[data-view="voice"] .call-shortcut{display:none}
+body.call-active .call-shortcut{animation:glow 1.8s ease-in-out infinite}
+.mobile-settings{display:none}
+
+/* ───────── Conversation ───────── */
+.chat-view{display:flex;flex-direction:column;width:min(780px,100%);align-self:center;padding:0 28px;position:relative}
+.messages{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;padding:22px 4px 14px;scrollbar-width:thin;scrollbar-color:var(--scrollbar) transparent}
+.day-divider{text-align:center;color:var(--faint);font-size:12px;font-weight:500;letter-spacing:.2px;margin:22px 0 16px}
+.day-divider:first-child{margin-top:4px}
+.message{display:flex;flex-direction:column;align-items:flex-start;margin:0 0 12px;animation:arrive .28s ease-out}
+.message .message-text{white-space:pre-wrap;overflow-wrap:anywhere;-webkit-user-select:text;user-select:text}
+.message.assistant .message-text{font:17.5px/1.52 var(--serif);letter-spacing:-.05px;max-width:min(92%,640px)}
+.message.assistant .message-label{display:none}
+.message.assistant.flagged .message-label{display:block;font-size:12px;color:var(--accent-deep);margin:0 0 5px}
+.message.user{align-items:flex-end}
+.message.user .message-text{background:var(--bubble);color:var(--bubble-ink);padding:9px 15px 10px;border-radius:21px 21px 6px 21px;max-width:min(82%,560px);font-size:16px;line-height:1.42}
+.message.user .message-label{order:2;font-size:11px;color:var(--faint);margin:5px 4px 0 0;font-variant-numeric:tabular-nums}
+.message.user+.message.assistant,.message.assistant+.message.user{margin-top:20px}
+/* A message you just sent rises out of the composer and settles; her reply indicator follows a beat later. */
+.message.sent{animation:none}
+.message.sent .message-text{transform-origin:100% 100%;animation:send 1s cubic-bezier(.22,.9,.3,1) backwards,send-fade .5s ease-out backwards}
+@supports (animation-timing-function:linear(0,1)){.message.sent .message-text{animation-timing-function:linear(0,0.04,0.136,0.261,0.395,0.525,0.643,0.745,0.828,0.894,0.944,0.98,1.005,1.02,1.028,1.031,1.031,1.029,1.025,1.021,1.017,1.013,1.009,1.006,1.004,1.002,1.001,1,1),ease-out}}
+.message.sent .message-label{animation:arrive .45s ease-out .6s backwards}
+.message.sent+.message.pending{animation:arrive .45s ease-out .85s backwards}
+.message.user+.message.user{margin-top:-4px}
+/* Words of a reply as they are generated: each appears out of a blur, just after the one before. */
+/* While a reply is growing its height is eased by script; words below the edge wait out of sight
+   so the list's length changes smoothly, not a line at a time. */
+.message-text.growing{overflow-y:clip;position:relative}
+.message-text .w{display:inline-block;max-width:100%;opacity:0}
+.message-text .w.on{animation:manifest 1.2s ease-out both}
+.word-dust{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:5}
+.message.failed .message-text{color:var(--accent-deep)}
+.message.pending .message-text:empty::before{content:"";display:block;width:38px;height:22px;background:radial-gradient(circle 4px,var(--faint) 96%,#0000) 0 50%/12.66px 100% repeat-x;animation:typing 1.1s ease-in-out infinite}
+.voice-error-note{margin-top:8px;font-size:13px;line-height:1.5;color:var(--accent-deep);background:var(--accent-wash);padding:8px 12px;border-radius:12px;max-width:min(92%,640px)}
+.loading-conversation,.empty{margin:auto;padding:25vh 20px 0;text-align:center;color:var(--muted);font:19px/1.4 var(--serif);display:flex;flex-direction:column;align-items:center;gap:20px}
+.loader{width:22px;height:22px;border-radius:50%;border:1.5px solid var(--line-strong);border-top-color:var(--accent);animation:spin 1.1s linear infinite}
+.new-message-pill{position:absolute;bottom:104px;left:50%;transform:translateX(-50%);background:var(--ink);color:var(--paper);border:0;border-radius:22px;padding:9px 16px;font-size:13px;font-weight:500;box-shadow:0 6px 22px #0003;z-index:3}
+
+/* Composer */
+.composer-area{flex-shrink:0;padding:8px 0 18px;background:var(--paper)}
+.composer{display:flex;align-items:flex-end;gap:8px;background:var(--surface);border:1px solid var(--line-strong);border-radius:25px;padding:5px 5px 5px 18px;box-shadow:0 4px 22px var(--shadow);transition:box-shadow .2s,border-color .2s}
+.composer:focus-within{border-color:var(--accent-soft);box-shadow:0 6px 28px #a05d281a}
+.composer textarea{resize:none;outline:0;border:0;background:transparent;flex:1;min-width:0;max-height:160px;color:var(--ink);font-size:16.5px;line-height:1.4;padding:8px 0;margin:0}
+.attach-button{width:38px;height:38px;border:0;border-radius:50%;background:var(--panel);color:var(--soft);display:grid;place-items:center;flex-shrink:0;margin-left:-11px;box-shadow:inset 0 0 0 1px var(--line);transition:background .15s,color .15s,transform .1s}
+.attach-button svg{stroke-width:2.1}
+.attach-button:hover{color:var(--ink)}
+.attach-button:active{transform:scale(.92)}
+.attachment-tray{display:flex;gap:10px;padding:0 6px 10px;overflow-x:auto;scrollbar-width:none}
+.attachment{position:relative;flex-shrink:0;width:76px;height:76px;border-radius:14px;overflow:hidden;background:var(--panel);box-shadow:inset 0 0 0 1px var(--line)}
+.attachment img{width:100%;height:100%;object-fit:cover;display:block}
+.attachment.preparing img{opacity:.55}
+.attachment.preparing::after{content:"";position:absolute;inset:auto auto 8px 8px;width:16px;height:16px;border-radius:50%;border:2px solid #fff8;border-top-color:#fff;animation:spin 1s linear infinite}
+.attachment.failed{box-shadow:inset 0 0 0 1.5px var(--accent)}
+.attachment-note{position:absolute;left:0;right:0;bottom:0;font-size:10px;line-height:1.2;padding:3px 5px;background:#fff9;color:var(--accent-deep)}
+.attachment-remove{position:absolute;top:4px;right:4px;width:22px;height:22px;border:0;border-radius:50%;background:#2b2522cc;color:#fff;font-size:15px;line-height:1;display:grid;place-items:center;padding:0}
+.message.photo-only .message-text{display:none}
+.composer textarea::placeholder{color:var(--faint)}
+.send-button{width:38px;height:38px;border:0;background:var(--accent);color:var(--on-accent);border-radius:50%;display:grid;place-items:center;flex-shrink:0;transition:background .15s,opacity .15s,transform .1s}
+.send-button:hover{background:var(--accent-hover)}
+.send-button:active{transform:scale(.92)}
+.send-button svg{stroke-width:2.2}
+.composer textarea:placeholder-shown~#send-button{opacity:.38}
+.send-button.stop{background:var(--ink)}
+.send-button.stop svg rect,#interrupt-button svg rect{fill:currentColor;stroke:none}
+.composer-caption{display:flex;align-items:center;justify-content:space-between;margin:9px 14px 0;font-size:12px;color:var(--faint)}
+.keyboard-hint>span{padding:0 4px}
+
+/* ───────── Voice ───────── */
+/* The same cream page as the conversation. The cloud canvas fills it; everything else floats on top. */
+.voice-view{--night:var(--paper);position:relative;display:flex;flex-direction:column;align-items:center;text-align:center;padding:26px 24px calc(22px + var(--safe-bottom));overflow:hidden;background:var(--paper);color:var(--ink)}
+#presence{display:block;touch-action:none}
+.voice-heading,.voice-spacer,.orb-caption,.live-caption,.voice-footnote{pointer-events:none}
+.voice-heading{flex-shrink:0;transition:opacity .5s}
+.voice-heading h1{font:34px/1.1 var(--serif);letter-spacing:-.8px;margin:0 0 8px;color:var(--ink)}
+.voice-heading p{font-size:14px;color:var(--muted);margin:0}
+body.call-active .voice-heading{opacity:0}
+.voice-spacer{flex:1 1 0;min-height:150px;width:100%;display:flex;align-items:center;justify-content:center;min-width:0}
+.voice-spacer{pointer-events:auto}
+.orb-caption{flex-shrink:0;color:var(--accent-deep);font-size:15px;font-weight:500;display:flex;align-items:center;justify-content:center;gap:10px}
+.orb-caption #call-time{color:var(--muted);font-weight:400;font-variant-numeric:tabular-nums}
+/* The state phrase stays in the page for screen readers and the browser tests, but is not shown. */
+#voice-state{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+.live-caption{flex-shrink:0;font:19px/1.45 var(--serif);max-width:560px;width:100%;height:84px;overflow-y:auto;margin:8px 0 18px;color:var(--ink);white-space:pre-wrap;display:flex;flex-direction:column;justify-content:flex-end;-webkit-mask-image:linear-gradient(#0000,#000 28%);mask-image:linear-gradient(#0000,#000 28%)}
+.voice-controls{flex-shrink:0;display:flex;align-items:flex-start;justify-content:center;gap:26px;min-height:92px}
+.start-call{display:flex;align-items:center;justify-content:center;gap:12px;color:var(--on-accent);background:var(--accent);border:0;border-radius:32px;height:60px;padding:0 32px;font-size:17px;font-weight:600;box-shadow:0 10px 34px #d4583a44;transition:transform .15s,background .15s}
+.start-call:hover{background:var(--accent-hover)}
+.start-call:active{transform:scale(.97)}
+.start-call svg{width:22px;height:22px}
+.round-button,.end-call{display:flex;flex-direction:column;align-items:center;gap:8px;border:0;background:transparent;font-size:12px;color:var(--muted);padding:0;width:72px}
+.round-button svg,.end-call svg{width:60px;height:60px;padding:19px;border-radius:50%;background:var(--surface);box-shadow:inset 0 0 0 1px var(--line-strong),0 4px 18px var(--shadow);color:var(--ink);transition:background .15s,transform .1s}
+.round-button:active svg,.end-call:active svg{transform:scale(.93)}
+.end-call{gap:4px}
+.end-call svg{width:68px;height:68px;padding:17px;background:#c23b2e;color:#fff;box-shadow:0 8px 26px #c23b2e55;margin-top:-4px}
+.end-call svg path{fill:currentColor;stroke:none}
+.mute-slash{display:none}
+.round-button.muted svg{background:var(--ink);color:var(--paper);box-shadow:none}
+.round-button.muted .mute-slash{display:inline}
+.voice-footnote{flex-shrink:0;font-size:13px;color:var(--muted);margin:14px 0 0;transition:opacity .3s}
+body.call-active .voice-footnote{opacity:0}
+
+/* ───────── Settings ───────── */
+dialog{width:min(520px,calc(100% - 32px));max-height:88dvh;border:0;border-radius:26px;padding:0;background:var(--paper);color:var(--ink);box-shadow:0 30px 120px var(--sheet-shadow),0 0 0 1px var(--line);overflow-y:auto;overscroll-behavior:contain}
+dialog[open]{animation:sheet .32s cubic-bezier(.2,.8,.2,1)}
+dialog::backdrop{background:var(--backdrop);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+.dialog-header{padding:20px 14px 12px 24px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;background:var(--paper);z-index:2}
+.dialog-header h2{font:28px var(--serif);letter-spacing:-.6px;margin:0}
+#close-settings{background:var(--hover-ink)}
+.settings-content{padding:4px 16px 20px;display:flex;flex-direction:column;gap:12px}
+.settings-content section{padding:18px;background:var(--surface);border-radius:20px;box-shadow:0 0 0 1px var(--line)}
+h3{font-size:16px;margin:0 0 6px;font-weight:600}
+.settings-content p{font-size:14px;line-height:1.5;color:var(--muted);margin:0 0 14px}
+.account-state{padding:11px 13px;border-radius:12px;background:var(--panel);font-size:13px;margin:0 0 6px;color:var(--soft)}
+label{display:block;font-size:13px;font-weight:500;color:var(--soft);margin:16px 0 7px}
+input,select{border:1px solid var(--line-strong);background:var(--paper);border-radius:12px;padding:0 13px;height:46px;outline:0;color:var(--ink);font-size:16px;width:100%;min-width:0}
+input:focus,select:focus{border-color:var(--accent)}
+.field-row{display:flex;gap:8px}
+.small-button{border:0;background:var(--panel);box-shadow:inset 0 0 0 1px var(--line-strong);border-radius:12px;height:46px;padding:0 16px;white-space:nowrap;font-size:15px;font-weight:500;transition:background .15s}
+.small-button:hover{background:var(--panel-strong)}
+.settings-content .small-note{font-size:13px;margin:8px 0 0;color:var(--muted);line-height:1.5}
+.save-voice{margin-top:18px;width:100%;background:var(--accent);color:var(--on-accent);box-shadow:none}
+.save-voice:hover{background:var(--accent-hover)}
+#settings-feedback{font-size:13px;line-height:1.5;color:var(--accent-deep)}
+#settings-feedback:not(:empty){margin-top:12px}
+#phone-link{margin-top:12px;font-size:13px}
+.settings-content .about-sai{text-align:center;background:transparent;box-shadow:none;padding:14px 0 4px}
+.about-wordmark{font-size:24px;letter-spacing:-1.2px;font-weight:650}
+.about-wordmark span{color:var(--accent)}
+.settings-content .about-sai p{margin:4px 0;font:15px var(--serif);color:var(--muted)}
+.about-sai>span{font-size:12px;color:var(--faint)}
+
+/* ───────── Toast ───────── */
+.toast{position:fixed;left:50%;bottom:32px;transform:translateX(-50%);padding:12px 18px;border-radius:16px;background:var(--ink);color:var(--paper);font-size:14px;line-height:1.4;box-shadow:0 8px 30px #0003;width:max-content;max-width:min(92vw,440px);z-index:100;text-align:center;animation:arrive .25s ease-out}
+
+/* ───────── Motion ───────── */
+@keyframes breathe{0%,100%{transform:scale(.96)}50%{transform:scale(1.04)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes pulse{50%{opacity:.35}}
+@keyframes typing{0%,100%{opacity:.35}50%{opacity:1}}
+@keyframes arrive{from{opacity:0;transform:translateY(6px)}}
+@keyframes manifest{0%{opacity:0;filter:blur(9px)}35%{opacity:.18;filter:blur(6px)}70%{opacity:.7;filter:blur(1.5px)}100%{opacity:1;filter:blur(0)}}
+@keyframes send{from{transform:translateY(40px) scale(.88)}to{transform:none}}
+@keyframes send-fade{from{opacity:0}}
+@keyframes glow{50%{box-shadow:0 4px 22px #d4583a99,0 0 0 5px #d4583a22}}
+@keyframes sheet{from{opacity:0;transform:translateY(24px)}}
+
+/* ───────── Narrow window ───────── */
+@media(max-width:950px){
+  .app{grid-template-columns:200px minmax(0,1fr)}
+  .nav-button kbd{display:none}
+  .topbar{padding:0 20px}
+  .chat-view{padding:0 20px}
+}
+@media(min-width:651px){
+  .mini-orb{display:none}
+  .toast{animation:none}
+}
+
+/* ───────── iPhone ───────── */
+@media(max-width:650px){
+  .app{display:block;min-height:0}
+  .app,main{height:var(--phone-height,100dvh)}
+  /* When the iPhone app reports the keyboard itself, only the space under the header gives way to it. */
+  main{padding-bottom:var(--keyboard,0px);transition:padding-bottom var(--keyboard-time,.25s) cubic-bezier(.38,.7,.125,1)}
+  .keyboard-up:not(.native-keyboard) .composer-area{padding-bottom:8px}
+  .sidebar{display:none}
+  .topbar{height:auto;padding:calc(var(--safe-top) + 6px) 12px 8px 16px;background:var(--paper)}
+  .mobile-settings{display:inline-flex}
+  .topbar-actions{gap:2px}
+  .chat-view{padding:0;width:100%}
+  .messages{padding:14px 16px 10px}
+  .message.assistant .message-text{font-size:18px;line-height:1.48;max-width:94%}
+  .message.user .message-text{font-size:17px;max-width:84%}
+  .composer-area{padding:6px 12px calc(8px + var(--safe-bottom))}
+  .composer-area{transition:padding-bottom .28s cubic-bezier(.2,.8,.2,1)}
+  .keyboard-open:not(.native-keyboard) .composer-area{padding-bottom:8px}
+  .composer textarea{font-size:17px}
+  .composer-caption{display:none}
+  .new-message-pill{bottom:calc(76px + var(--safe-bottom))}
+  .voice-view{padding:18px 20px calc(14px + var(--safe-bottom))}
+  .voice-heading h1{font-size:30px}
+  .live-caption{font-size:19px;height:82px;margin:2px 4px 14px;position:relative;z-index:4}
+  dialog{width:100%;max-width:100%;margin:auto 0 0;border-radius:28px 28px 0 0;max-height:calc(100dvh - var(--safe-top) - 24px);padding-bottom:var(--safe-bottom)}
+  dialog[open]{animation:sheet-up .36s cubic-bezier(.2,.85,.2,1)}
+  .dialog-header{padding-top:22px}
+  .dialog-header::before{content:"";position:absolute;top:8px;left:50%;width:38px;height:5px;margin-left:-19px;border-radius:3px;background:var(--line-strong)}
+  .toast{bottom:auto;top:calc(var(--safe-top) + 68px)}
+}
+/* Native keyboard geometry belongs to the page, not the outer WKWebView.
+   Use its stable layout height and leave the status-bar safe area untouched. */
+.native-keyboard{--safe-top:var(--native-safe-top,env(safe-area-inset-top,0px));--safe-bottom:var(--native-safe-bottom,env(safe-area-inset-bottom,0px))}
+.native-keyboard .app,.native-keyboard main{height:100%;min-height:0}
+/* Layout snaps once; the slide itself is a transform set by app.js. */
+.native-keyboard main{padding-bottom:var(--keyboard,0px);transition:none}
+.native-keyboard .composer-area{transition:none}
+.native-keyboard .topbar{position:relative;z-index:2}
+.native-keyboard dialog{bottom:var(--keyboard-full,0px);max-height:calc(100% - var(--safe-top) - var(--keyboard-full,0px) - 24px);transition:bottom var(--keyboard-time,.25s) cubic-bezier(.38,.7,.125,1),max-height var(--keyboard-time,.25s) cubic-bezier(.38,.7,.125,1)}
+.native-keyboard.keyboard-up dialog{padding-bottom:8px}
+@media(min-width:651px){.native-keyboard .topbar{height:calc(64px + var(--safe-top));padding-top:var(--safe-top)}}
+@keyframes sheet-up{from{transform:translateY(100%)}}
+@media(max-width:650px) and (max-height:640px){
+  .voice-heading{display:none}
+  .live-caption{height:58px}
+  .voice-footnote{display:none}
+}
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;scroll-behavior:auto!important;transition:none!important}
+}
+
+/* Camera sharing is a visible, optional part of an active native call. */
+.outing-controls{position:relative;z-index:2;text-align:center;margin:0 auto 12px;max-width:90%}
+.outing-button{display:inline-flex;align-items:center;gap:8px;border:1px solid rgba(127,82,65,.3);border-radius:24px;padding:10px 17px;background:var(--translucent);color:var(--ink,#453c36);font:inherit;cursor:pointer}
+.outing-button svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.6}
+.outing-button[aria-pressed="true"]{background:var(--accent-wash);border-color:var(--accent)}
+#outing-status{font-size:12px;line-height:1.4;opacity:.75;margin:7px 0 0;max-width:290px}
+@media(max-width:480px){.voice-controls{gap:12px}.outing-controls{margin-bottom:8px}}
+
+/* Participant selection occupies the existing subtitle, leaving the header in place. */
+.speaker-button{appearance:none;border:0;background:none;color:var(--muted);font:inherit;font-size:12px;line-height:16px;padding:4px 6px 4px 0;margin:-4px 0;cursor:pointer;white-space:nowrap}
+.identity-text{min-width:0}
+.speaker-button{max-width:180px;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.speaker-name{overflow-wrap:anywhere;min-width:0}
+.speaker-button:disabled{opacity:1;cursor:default}
+.speaker-button[data-guest="true"]{color:var(--accent-deep);font-weight:600}
+/* "Who's talking?" uses the same sheet as Settings: full width from the bottom on the phone, a centred card on the Mac. */
+#speaker-dialog .dialog-header{padding-bottom:6px}
+#close-speaker{background:var(--hover-ink)}
+.speaker-body{padding:0 16px 22px}
+.speaker-body:focus{outline:0}
+.speaker-body p{font-size:14px;line-height:1.5;color:var(--muted);margin:0 8px}
+.speaker-choices{display:flex;flex-direction:column;gap:10px;margin:18px 0 16px}
+.speaker-choices button{display:flex;align-items:center;gap:14px;width:100%;min-height:64px;padding:10px 16px 10px 12px;border:0;border-radius:20px;background:var(--surface);box-shadow:0 0 0 1px var(--line);color:var(--ink);font:inherit;text-align:left;cursor:pointer;transition:background .15s,box-shadow .15s,transform .1s}
+.speaker-choices button:active{transform:scale(.985)}
+.speaker-choices button:disabled{opacity:.6}
+.speaker-avatar{flex-shrink:0;width:42px;height:42px;border-radius:50%;display:grid;place-items:center;background:var(--panel);font:19px var(--serif);color:var(--soft)}
+.speaker-name{flex:1;font-size:17px;font-weight:500}
+.speaker-check{width:22px;height:22px;stroke:var(--accent);stroke-width:2.2;opacity:0;transition:opacity .15s}
+.speaker-choices button[aria-pressed="true"]{background:var(--accent-wash);box-shadow:0 0 0 1.5px var(--accent)}
+.speaker-choices button[aria-pressed="true"] .speaker-avatar{background:var(--accent);color:var(--on-accent)}
+.speaker-choices button[aria-pressed="true"] .speaker-check{opacity:1}
+#speaker-feedback{text-align:center;font-size:13px}
+@media(min-width:651px){#speaker-dialog{width:min(420px,calc(100% - 32px))}}
+
+/* Native tablet windows retain safe areas in portrait, landscape and Split View. */
+@media(min-width:651px){
+  .native-keyboard .sidebar{padding-top:calc(28px + var(--safe-top));padding-bottom:calc(18px + var(--safe-bottom))}
+  .native-keyboard .composer-area{padding-bottom:calc(18px + var(--safe-bottom))}
+}
+@media(hover:none) and (pointer:coarse){
+  .nav-button{min-height:44px}
+  .bar-button{min-width:44px;min-height:44px}
+  .keyboard-hint,.nav-button kbd{display:none}
+}
+/* Pictures share the conversation's width, with the whole image preserved. */
+.message-media{width:min(94%,640px);display:grid;gap:10px;margin:12px 0 4px}
+.message.user .message-media{align-self:flex-end;max-width:min(84%,560px)}
+.message-audio{min-width:0;padding:15px 12px 10px;border:1px solid var(--media-line);border-radius:19px;background:var(--media);box-shadow:0 5px 18px var(--shadow)}
+.audio-title{margin:0 7px 10px;font:600 14px/1.4 var(--sans);color:var(--ink);overflow-wrap:anywhere}
+.message-audio audio{display:block;width:100%;max-width:100%;height:44px}
+.audio-retry{border:0;background:transparent;padding:10px 7px;color:var(--accent);font:13px/1.4 var(--sans);text-align:left;cursor:pointer}
+.audio-retry[hidden]{display:none}
+.message-photo{display:block;position:relative;width:100%;padding:0;overflow:hidden;border:1px solid var(--media-line);border-radius:19px;background:var(--media);box-shadow:0 5px 18px var(--shadow);text-align:center;cursor:zoom-in}
+.message-photo img{display:block;width:100%;height:auto;object-fit:contain;opacity:0;transition:opacity .2s}
+.message-photo[data-state=ready] img{opacity:1}
+.photo-status{position:absolute;inset:0;display:grid;place-items:center;padding:18px;font:14px/1.4 var(--sans);color:var(--muted)}
+.photo-status[hidden]{display:none}
+.photo-open{position:absolute;right:10px;bottom:10px;border-radius:20px;padding:6px 10px;background:#221b1cc7;color:#fffaf3;font:11px var(--sans);pointer-events:none}
+.message-photo:not([data-state=ready]) .photo-open{display:none}
+.message-photo:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
+.message.has-media .message-text:empty{display:none}
+.message.has-media.pending .message-text:empty::before{display:none}
+dialog.photo-viewer{position:fixed;inset:0;width:100%;max-width:none;height:100%;max-height:none;margin:0;padding:0;border-radius:0;overflow:hidden;background:#181513;color:#fffaf3;box-shadow:none}
+dialog.photo-viewer[open]{display:flex;flex-direction:column;animation:none}
+.native-keyboard dialog.photo-viewer{inset:0;max-height:none;padding:0;transition:none}
+.photo-viewer::backdrop{background:#181513}
+.photo-viewer-header{display:flex;align-items:center;gap:10px;flex-shrink:0;padding:calc(var(--safe-top,0px) + 12px) 16px 12px;background:#181513;z-index:2}
+.photo-viewer-header>span{margin-right:auto;font:17px var(--sans)}
+.photo-viewer-control{border:0;border-radius:22px;min-height:44px;padding:0 16px;background:#ffffff18;color:#fffaf3;font:14px var(--sans)}
+.photo-viewer-stage{flex:1;min-height:0;overflow:auto;display:flex;align-items:center;justify-content:center;padding:0 12px calc(var(--safe-bottom,0px) + 12px);overscroll-behavior:contain;touch-action:pan-x pan-y pinch-zoom}
+.photo-viewer-stage img{display:block;width:100%;height:100%;max-width:100%;max-height:100%;object-fit:contain;user-select:none}
+.photo-viewer.zoomed .photo-viewer-stage{display:block}
+.photo-viewer.zoomed .photo-viewer-stage img{max-width:none;max-height:none;min-width:100%;width:auto;height:auto;cursor:zoom-out}

@@ -1,0 +1,134 @@
+/* ───────── Chess: sheets ─────────
+   Every chess surface is a sheet in the app's own language: a bottom sheet with a handle on the
+   phone, a centred card on a wide screen. Three of them: the add sheet behind "+", the board, and
+   the board's "more" actions. */
+.chess-sheet{width:min(560px,calc(100vw - 24px));max-height:calc(100dvh - var(--safe-top) - 24px);margin:auto;padding:0;border:0;border-radius:26px;background:var(--paper);color:var(--ink);box-shadow:0 30px 120px var(--sheet-shadow),0 0 0 1px var(--line);overflow-y:auto;overscroll-behavior:contain}
+.chess-sheet::backdrop{background:var(--backdrop);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
+.chess-sheet-head{position:sticky;top:0;z-index:2;display:flex;align-items:center;justify-content:space-between;gap:8px;padding:18px 14px 8px;background:var(--paper)}
+.chess-sheet-head h2{font:24px/1.1 var(--serif);letter-spacing:-.5px;margin:0;flex:1;text-align:center}
+.chess-icon-button{width:40px;height:40px;border:0;border-radius:50%;background:var(--panel);color:var(--soft);display:grid;place-items:center;flex-shrink:0}
+.chess-icon-button svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.chess-icon-button:active{transform:scale(.94)}
+.chess-icon-button.quiet{visibility:hidden}
+
+/* rows: icon in a circle, a label, a hint, a chevron — the shape of every choice in a sheet */
+.chess-rows{display:flex;flex-direction:column;gap:10px;padding:6px 16px 18px}
+.chess-row{display:flex;align-items:center;gap:14px;width:100%;min-height:66px;padding:10px 14px 10px 12px;border:0;border-radius:20px;background:var(--surface);box-shadow:0 0 0 1px var(--line);color:var(--ink);text-align:left;font:inherit}
+.chess-row:active{transform:scale(.985)}
+.chess-row:disabled{opacity:.5}
+.chess-row-icon{flex-shrink:0;width:44px;height:44px;border-radius:50%;display:grid;place-items:center;background:var(--panel);color:var(--soft)}
+.chess-row-icon svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.chess-row-icon .chess-piece{width:28px;height:28px;stroke-width:2}
+.chess-row-icon.accent{background:var(--accent-wash);color:var(--accent-deep)}
+.chess-row-text{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.chess-row-text strong{font-size:17px;font-weight:500}
+.chess-row-text span{font-size:13px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.chess-row-chevron{width:18px;height:18px;flex-shrink:0;fill:none;stroke:var(--faint);stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.chess-row.danger{color:var(--danger)}.chess-row.danger .chess-row-icon{background:var(--danger-wash);color:var(--danger)}
+.chess-cancel{display:block;width:calc(100% - 32px);margin:-6px 16px 18px;min-height:52px;border:0;border-radius:18px;background:var(--panel);color:var(--soft);font-size:16px;font-weight:500}
+/* sheets without a title row still get a top margin, and a handle on the phone */
+.chess-sheet .sheet-eyebrow{position:relative;padding:22px 20px 12px;font-size:11px;letter-spacing:1.6px;text-transform:uppercase;color:var(--muted);font-weight:600;text-align:center}
+
+/* ───────── The board sheet ───────── */
+.chess-content{padding:0 20px 14px}
+.chess-feedback{padding:0 22px 16px;font-size:13px;color:var(--accent-deep);margin:0;text-align:center}.chess-feedback:empty{padding:0}
+/* player plates: who is which colour, and whose move it is */
+.chess-players{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:8px;padding:2px 0 12px}
+.chess-plate{display:flex;align-items:center;gap:10px;min-width:0;padding:8px 12px 8px 8px;border-radius:18px;background:var(--surface);box-shadow:0 0 0 1px var(--line);transition:box-shadow .3s,background .3s}
+.chess-plate.right{flex-direction:row-reverse;text-align:right}
+.chess-plate.active{background:var(--accent-wash);box-shadow:0 0 0 1.5px var(--accent)}
+.chess-avatar{flex-shrink:0;width:36px;height:36px;border-radius:50%;display:grid;place-items:center;background:var(--panel);font:17px var(--serif);color:var(--soft)}
+.chess-plate.active .chess-avatar{background:var(--accent);color:var(--on-accent)}
+.chess-plate-text{min-width:0;display:flex;flex-direction:column;gap:1px}
+.chess-plate-text strong{font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.chess-plate-text span{font-size:11px;color:var(--muted);display:flex;align-items:center;gap:5px}
+.chess-plate.right .chess-plate-text span{justify-content:flex-end}
+.chess-swatch{width:10px;height:10px;border-radius:50%;box-shadow:inset 0 0 0 1px #0002}.chess-swatch.w{background:#fffaf0}.chess-swatch.b{background:#36312c}
+.chess-vs{font:13px var(--serif);color:var(--faint);font-style:italic}
+.chess-turn{font:20px/1.2 var(--serif);text-align:center;margin:0 0 12px;color:var(--ink)}
+.chess-turn.her{color:var(--accent-deep)}
+.chess-turn.saved,.chess-turn.over{color:var(--muted)}
+
+.chess-board{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));aspect-ratio:1;width:100%;overflow:hidden;border-radius:12px;box-shadow:0 1px 0 #fff8,0 10px 30px #3a25140f,inset 0 0 0 1px #3a251422}
+.chess-square{display:flex;align-items:center;justify-content:center;position:relative;min-width:0;padding:2px;border:0;border-radius:0;aspect-ratio:1;touch-action:manipulation;-webkit-user-select:none;user-select:none;background:#ece2d0}
+.chess-square.dark{background:#8e9a85}.chess-square.last-move{background:#dcc07f}.chess-square.dark.last-move{background:#aa9e62}.chess-square.selected{background:#e5a06d;box-shadow:inset 0 0 0 3px #ae542b}.chess-square.preview{background:#e8bc88}.chess-square.in-check{background:#cb806f}
+.chess-square.legal::after{content:"";position:absolute;inset:38%;border-radius:50%;background:#23382755}.chess-square.legal-capture::after{content:"";position:absolute;inset:3px;border:4px solid #4b5a466e;border-radius:50%}
+.chess-square .chess-piece{width:91%;height:91%;stroke-width:2;fill:var(--piece);stroke:var(--edge);stroke-linejoin:round;stroke-linecap:round;filter:drop-shadow(0 2px 1px #34251338);pointer-events:none}
+.chess-piece.white{--piece:#fffaf0;--edge:#5a5143}.chess-piece.black{--piece:#36312c;--edge:#15120e}
+.chess-square.selected .chess-piece{transform:translateY(-3px)}
+.chess-rank,.chess-file{position:absolute;font:9px/1 var(--sans);font-weight:650;color:#45523d;pointer-events:none}.chess-rank{left:3px;top:3px}.chess-file{bottom:2px;right:3px}.chess-square.dark small{color:#f6eee0}
+
+/* actions under the board */
+.chess-actions{display:flex;align-items:center;justify-content:center;gap:10px;min-height:72px;padding:14px 0 4px}
+.chess-primary,.chess-secondary{border:0;border-radius:24px;min-height:48px;padding:12px 22px;font-weight:600;font-size:15px;font-family:inherit}
+.chess-primary{background:var(--accent);color:var(--on-accent);box-shadow:0 6px 18px #d4583a2e}.chess-primary:active{transform:scale(.97)}
+.chess-secondary{background:var(--panel);color:var(--soft)}
+.chess-note{font-size:13px;line-height:1.5;text-align:center;color:var(--muted);margin:4px 12px}
+.chess-error{font-size:13px;line-height:1.5;text-align:center;color:var(--accent-deep);margin:0 12px 8px}
+/* her word on the move: a quiet quote with her name on it */
+.chess-comment{position:relative;margin:6px 4px 10px;padding:12px 16px 12px 44px;border-radius:18px;background:var(--surface);box-shadow:0 0 0 1px var(--line)}
+.chess-comment canvas,.chess-comment .chess-comment-dot{position:absolute;left:12px;top:12px;width:22px;height:22px;border-radius:50%;background:radial-gradient(circle at 34% 28%,#ffe3ad 0%,#f0a26d 28%,#dc6046 62%,#b04032 90%)}
+.chess-comment span{display:block;font-size:11px;letter-spacing:.6px;text-transform:uppercase;color:var(--muted);margin-bottom:3px}
+.chess-comment q{quotes:none;font:17px/1.4 var(--serif);color:var(--ink)}
+/* the move strip: the whole game in one scrolling line */
+.chess-moves{display:flex;gap:4px;overflow-x:auto;padding:8px 2px 12px;margin:0 -2px;scrollbar-width:none;-webkit-overflow-scrolling:touch;font-variant-numeric:tabular-nums}
+.chess-moves::-webkit-scrollbar{display:none}
+.chess-moves:empty::before{content:"No moves yet";font-size:12px;color:var(--faint);padding:4px 6px}
+.chess-move{flex-shrink:0;display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border-radius:12px;background:var(--panel);font-size:13px;color:var(--soft)}
+.chess-move b{font-weight:600;color:var(--muted)}.chess-move em{font-style:normal;color:var(--ink)}
+.chess-move.latest{background:var(--accent-wash);color:var(--accent-deep)}.chess-move.latest em{color:var(--accent-deep)}
+.chess-draw{display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding:12px 14px;margin:4px 0 10px;border-radius:16px;background:var(--accent-wash);color:var(--accent-deep);font-size:14px}
+.chess-draw span{flex:1;min-width:140px}.chess-draw button{border:0;border-radius:14px;background:var(--surface);color:var(--ink);padding:9px 14px;font-weight:500}
+.chess-promotion{position:sticky;bottom:0;margin:6px 0 2px;background:var(--surface);border-radius:18px;padding:12px;text-align:center;box-shadow:0 0 0 1px var(--line),0 8px 30px #0002}
+.chess-promotion p{margin:0 0 8px;font-size:13px;color:var(--muted)}
+.chess-promotion-choices{display:flex;justify-content:center;gap:8px}
+.chess-promotion button{display:flex;flex-direction:column;align-items:center;gap:2px;border:0;background:var(--panel);border-radius:14px;padding:8px 10px 6px;font-size:11px;color:var(--soft);text-transform:capitalize}
+.chess-promotion .chess-piece{display:block;width:40px;height:40px;fill:var(--piece);stroke:var(--edge);stroke-width:2}
+
+/* ───────── New game ───────── */
+.chess-intro{text-align:center;padding:4px 4px 10px}
+.chess-intro>.chess-piece{width:84px;height:84px;fill:#36312c;stroke:#15120e;stroke-width:1.5;filter:drop-shadow(0 8px 10px #45332024)}
+.chess-intro h3{font:30px/1.1 var(--serif);letter-spacing:-.6px;margin:14px 0 10px}
+.chess-intro p{font:15px/1.55 var(--sans);color:var(--muted);max-width:320px;margin:0 auto 20px}
+.chess-colors{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:0 0 8px}
+.chess-side{display:flex;flex-direction:column;align-items:center;gap:6px;padding:16px 10px 14px;border:0;border-radius:20px;background:var(--surface);box-shadow:0 0 0 1px var(--line);color:var(--ink);font:inherit}
+.chess-side:active{transform:scale(.98)}
+.chess-side .chess-piece{width:52px;height:52px;stroke-width:2;fill:var(--piece);stroke:var(--edge);filter:drop-shadow(0 3px 3px #34251330)}
+.chess-side strong{font-size:16px;font-weight:600}.chess-side span{font-size:12px;color:var(--muted)}
+.chess-side.primary{background:var(--accent-wash);box-shadow:0 0 0 1.5px var(--accent)}
+.chess-earlier{padding:10px 0 4px}
+.chess-earlier h4{font-size:11px;letter-spacing:1.6px;text-transform:uppercase;color:var(--muted);font-weight:600;margin:8px 4px 10px}
+.chess-earlier .chess-rows{padding:0 0 8px}
+.chess-earlier .chess-row{min-height:58px;border-radius:16px}
+.chess-result{flex-shrink:0;width:40px;height:40px;border-radius:50%;display:grid;place-items:center;font:600 12px var(--sans);background:var(--panel);color:var(--soft)}
+.chess-result.won{background:#dfe8d9;color:#3f5a3a}.chess-result.lost{background:#f6ddd5;color:#b4432a}.chess-result.live{background:var(--accent-wash);color:var(--accent-deep)}
+
+/* ───────── In the conversation ───────── */
+.chess-resume{align-self:center;display:flex;align-items:center;gap:9px;margin:0 auto 10px;padding:8px 12px 8px 10px;max-width:calc(100% - 24px);border:0;border-radius:20px;background:var(--surface);box-shadow:0 0 0 1px var(--line),0 4px 14px #35230d0d;color:var(--ink);font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.chess-resume .chess-piece{flex-shrink:0;width:20px;height:20px;fill:#36312c;stroke:#15120e;stroke-width:2}
+.chess-resume b{font-weight:600}.chess-resume i{font-style:normal;color:var(--muted)}
+.chess-resume .chess-row-chevron{width:14px;height:14px;margin-left:-2px}
+.chess-resume.her{box-shadow:0 0 0 1.5px var(--accent),0 4px 14px #d4583a1a}.chess-resume.her i{color:var(--accent-deep)}
+.message.has-chess .message-text:empty{display:none}.message.has-chess .message-text:not(:empty){margin-bottom:8px}
+.chess-card{display:block;width:min(252px,77vw);border:0;background:var(--surface);padding:10px;border-radius:20px;text-align:left;color:var(--ink);box-shadow:0 0 0 1px var(--line-strong),0 4px 15px #35230d0b;font:inherit}
+.chess-card:active{transform:scale(.985)}
+@media(hover:hover){.chess-card:hover{box-shadow:0 0 0 1.5px var(--accent),0 4px 15px #35230d0b}}
+.chess-card-heading{display:flex;justify-content:space-between;align-items:center;padding:2px 4px 10px}
+.chess-card-heading strong{font:19px var(--serif);color:var(--ink)}
+.chess-card-move{font-size:12px;font-weight:600;color:var(--accent-deep);background:var(--accent-wash);padding:3px 9px;border-radius:10px;font-variant-numeric:tabular-nums}
+.chess-card-move.quiet{background:var(--panel);color:var(--muted);font-weight:500}
+.chess-card .chess-board{border-radius:8px;pointer-events:none;box-shadow:inset 0 0 0 1px #3a251422}.chess-card .chess-square{padding:0}
+.chess-card-foot{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--soft);padding:10px 4px 2px}
+.chess-card-foot .chess-row-chevron{width:14px;height:14px;margin-left:auto}
+
+@media(max-width:650px){
+  .chess-sheet{width:100%;max-width:100%;margin:auto 0 0;border-radius:28px 28px 0 0;max-height:calc(100dvh - var(--safe-top) - 24px);padding-bottom:var(--safe-bottom)}
+  .chess-sheet-head{padding-top:24px}
+  .chess-sheet-head::before,.chess-sheet .sheet-eyebrow::before{content:"";position:absolute;top:8px;left:50%;width:38px;height:5px;margin-left:-19px;border-radius:3px;background:var(--line-strong)}
+  .chess-sheet .sheet-eyebrow{padding-top:30px}
+  .chess-content{padding:0 16px 10px}
+  .chess-square .chess-piece{width:96%;height:96%}
+}
+@media(max-width:380px){.chess-plate-text span{display:none}.chess-avatar{width:32px;height:32px}}
+@media(prefers-reduced-motion:no-preference){.chess-square .chess-piece{transition:transform .13s ease}.chess-sheet[open]{animation:sheet .32s cubic-bezier(.2,.8,.2,1)}}
+.chess-sheet .interactive{max-width:min(100%,max(240px,calc(100dvh - var(--safe-top) - var(--safe-bottom) - 400px)));margin-inline:auto}

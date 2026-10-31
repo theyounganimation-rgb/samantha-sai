@@ -1,0 +1,11 @@
+node_modules/
+.env*
+*.log
+*.db
+*.sqlite*
+*.p12
+*.mobileprovision
+.DS_Store
+build/
+releases/
+*.xcodeproj/

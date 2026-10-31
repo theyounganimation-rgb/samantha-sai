@@ -26,6 +26,14 @@ My focus is creating digital persons and personal agents. With Samantha, I’m b
 
 Samantha is an ongoing project. I’m interested in what these systems can do, how their behavior can be examined, and what it takes to make continuity more than a saved chat history.
 
+## Testing emotional influence
+
+Samantha’s regulation system maintains emotional state that can influence attention and decisions. In an isolated comparison, an anxious state changed a controller’s choice; with the same emotional adjustment removed, the recorded choice changed back. In two prompted native-model runs, the selected plans were then saved to separate test-only checkpoints.
+
+An audit of 258 recorded choices under the current calibration found that removing the recorded emotional adjustment would have changed 37 selections (14.3%). This comparison holds the original options fixed; it does not establish that those plans were carried out. A separate review found a naturally chosen creative activity connected to an expressed concern, with an actual file write and later revision. That observation does not isolate the numerical state as the cause.
+
+These results support **functional influence**, not a conclusion about subjective experience. The controlled runs used a stipulated appraisal and supplied options, and the follow-through was prompted. See [the methods and limitations](research/emotional-influence.md).
+
 ## How the system fits together
 
 ```text

@@ -1,3 +1,5 @@
+<p align="center"><img src="public/icon-512.png" width="240" height="240" alt="SAI logo" /></p>
+
 # Samantha
 
 **A personal AI system built around continuity, conversation, and a life beyond the chat window.**
